@@ -13,7 +13,7 @@ const app = express();
 const port = 8080;
 
 app.get("/", (req, res) => {
-  res.send("hello from lenovo");
+  res.send("hello from codesandbox");
 });
 
 app.listen(port, () => {
