@@ -1,19 +1,16 @@
-// var http = require("http");
-
-// //create a server object:
-// http
-//   .createServer(function(req, res) {
-//     res.write("Hello World!"); //write a response to the client
-//     res.end(); //end the response
-//   })
-//   .listen(8080); //the server object listens on port 8080
-
 const express = require("express");
+const axios = require("axios");
+
 const app = express();
 const port = 8080;
 
-app.get("/", (req, res) => {
-  res.send("hello from lenovo");
+app.get("/", async (req, res) => {
+  let res;
+  try {
+    res = await axios.get("https://my-json-server.typicode.com/druska/trueaccord-mock-payments-api/debts");
+  } catch (err) {
+  }
+  res.send(res.data);
 });
 
 app.listen(port, () => {
