@@ -5,12 +5,13 @@ const app = express();
 const port = 8080;
 
 app.get("/", async (req, res) => {
-  let res;
+  let myres;
   try {
-    res = await axios.get("https://my-json-server.typicode.com/druska/trueaccord-mock-payments-api/debts");
-  } catch (err) {
-  }
-  res.send(res.data);
+    myres = await axios.get(
+      "https://my-json-server.typicode.com/druska/trueaccord-mock-payments-api/debts"
+    );
+  } catch (err) {}
+  res.send(myres.data);
 });
 
 app.listen(port, () => {
