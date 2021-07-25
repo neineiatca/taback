@@ -42,8 +42,12 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //
     const aaa = new Debt_1.Debt();
     aaa.debts = debtsObj;
-    // for debug
-    console.log(aaa.debts);
+    aaa.payment_plans = paymentPlansObj;
+    aaa.payments = paymentsObj;
+    //
+    //
+    //
+    aaa.totalPayments();
     //
     //
     //

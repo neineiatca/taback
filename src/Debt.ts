@@ -34,4 +34,14 @@ export class Debt {
   set payments(payments: Payment[]) {
     this._payments = payments;
   }
+
+  totalPayments() {
+    let aaa = this._payments.reduce((acc, current) => {
+      // for debug
+      console.log("----------------------------------------");
+      console.log(acc);
+      console.log(current);
+      return acc;
+    });
+  }
 }

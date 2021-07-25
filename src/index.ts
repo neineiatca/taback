@@ -43,8 +43,12 @@ app.get("/", async (req: any, res: any) => {
   const aaa = new Debt();
 
   aaa.debts = debtsObj;
-  // for debug
-  console.log(aaa.debts);
+  aaa.payment_plans = paymentPlansObj
+  aaa.payments = paymentsObj;
+  //
+  //
+  //
+  aaa.totalPayments();
   //
   //
   //
