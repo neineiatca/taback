@@ -33,10 +33,6 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         paymentsObj = (yield axios_1.default.get("https://my-json-server.typicode.com/druska/trueaccord-mock-payments-api/payments")).data;
     }
     catch (err) { }
-    // for debug
-    console.log(debtsObj);
-    console.log(paymentPlansObj);
-    console.log(paymentsObj);
     //
     //
     //
@@ -47,7 +43,8 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //
     //
     //
-    aaa.totalPayments();
+    aaa.categorizePayments();
+    aaa.combinePayments();
     //
     //
     //

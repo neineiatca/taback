@@ -33,22 +33,19 @@ app.get("/", async (req: any, res: any) => {
     ).data;
   } catch (err) {}
 
-  // for debug
-  console.log(debtsObj);
-  console.log(paymentPlansObj);
-  console.log(paymentsObj);
   //
   //
   //
   const aaa = new Debt();
 
   aaa.debts = debtsObj;
-  aaa.payment_plans = paymentPlansObj
+  aaa.payment_plans = paymentPlansObj;
   aaa.payments = paymentsObj;
   //
   //
   //
-  aaa.totalPayments();
+  aaa.categorizePayments();
+  aaa.combinePayments();
   //
   //
   //
