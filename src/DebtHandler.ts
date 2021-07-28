@@ -1,4 +1,4 @@
-import { CompositeDebt, Debt } from "./models/Debt";
+import { CompositeDebt, Debt, OutputDebt } from "./models/Debt";
 import { Payment } from "./models/Payment";
 import { Payment_plan, Payment_plan_withNext } from "./models/Payment_plan";
 
@@ -41,10 +41,10 @@ export class DebtHandler {
     return this._payment_plans_withNext;
   }
 
-  get composite_debts(): CompositeDebt[]{
+  get composite_debts(): CompositeDebt[] {
     return this._composite_debts;
   }
-  
+
   // expect Map like this
   // Map(4) {
   //   0 => [
@@ -153,7 +153,6 @@ export class DebtHandler {
 
   assembleCompositeDebtObj() {
     this._debts.forEach((currentDebt: Debt) => {
-
       // set properties
       let currentCompositeDebt = {} as CompositeDebt;
 
@@ -175,18 +174,35 @@ export class DebtHandler {
 
       // set properties related to payments
       let combinedPayment;
-      if (paymentPlan?.id) {
+      if (paymentPlan?.id !== undefined) {
         combinedPayment = this._paymentsTotalMap.get(paymentPlan?.id);
       }
 
       if (combinedPayment) {
         currentCompositeDebt.amount_paid = combinedPayment.amount;
-        currentCompositeDebt.amount_left =
-          currentCompositeDebt.amount_to_pay - currentCompositeDebt.amount_paid;
+        currentCompositeDebt.amount_left = parseFloat(
+          (
+            currentCompositeDebt.amount_to_pay -
+            currentCompositeDebt.amount_paid
+          ).toFixed(2)
+        );
       }
 
       // push to composite_debt array
       this._composite_debts.push(currentCompositeDebt);
     });
+  }
+
+  outputDebt(): OutputDebt[] {
+    let result = this._composite_debts.map((e) => {
+      return {
+        id: e.id,
+        amount: e.debt_amount,
+        remaining_amount: e.amount_left,
+        next_payment_due_date: e.next_date,
+      } as OutputDebt;
+    });
+
+    return result;
   }
 }

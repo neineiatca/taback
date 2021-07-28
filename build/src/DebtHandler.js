@@ -138,16 +138,25 @@ class DebtHandler {
             if ((paymentPlan === null || paymentPlan === void 0 ? void 0 : paymentPlan.id) !== undefined) {
                 combinedPayment = this._paymentsTotalMap.get(paymentPlan === null || paymentPlan === void 0 ? void 0 : paymentPlan.id);
             }
-            // for debug
-            console.log(combinedPayment);
             if (combinedPayment) {
                 currentCompositeDebt.amount_paid = combinedPayment.amount;
-                currentCompositeDebt.amount_left =
-                    currentCompositeDebt.amount_to_pay - currentCompositeDebt.amount_paid;
+                currentCompositeDebt.amount_left = parseFloat((currentCompositeDebt.amount_to_pay -
+                    currentCompositeDebt.amount_paid).toFixed(2));
             }
             // push to composite_debt array
             this._composite_debts.push(currentCompositeDebt);
         });
+    }
+    outputDebt() {
+        let result = this._composite_debts.map((e) => {
+            return {
+                id: e.id,
+                amount: e.debt_amount,
+                remaining_amount: e.amount_left,
+                next_payment_due_date: e.next_date,
+            };
+        });
+        return result;
     }
 }
 exports.DebtHandler = DebtHandler;

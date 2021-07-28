@@ -13,3 +13,10 @@ export type CompositeDebt = {
   next_date: string;
   installment: number;
 }
+
+export type OutputDebt = {
+  id:number;
+  amount: number;
+  remaining_amount: number;
+  next_payment_due_date: string;
+}

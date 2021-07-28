@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const axios_1 = __importDefault(require("axios"));
-const Debt_1 = require("./Debt");
+const DebtHandler_1 = require("./DebtHandler");
 const app = express_1.default();
 const port = 8080;
 app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -36,7 +36,7 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //
     //
     //
-    const debtHandler = new Debt_1.DebtHandler();
+    const debtHandler = new DebtHandler_1.DebtHandler();
     debtHandler.debts = debtsObj;
     debtHandler.payment_plans = paymentPlansObj;
     debtHandler.payments = paymentsObj;
@@ -47,10 +47,11 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     debtHandler.combinePayments();
     debtHandler.calculateNextPaymentDay();
     debtHandler.assembleCompositeDebtObj();
+    let aaa = debtHandler.outputDebt();
     //
     //
     //
-    res.json(debtHandler.composite_debts);
+    res.json(aaa);
 }));
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
