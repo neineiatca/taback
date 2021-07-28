@@ -36,19 +36,21 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //
     //
     //
-    const aaa = new Debt_1.Debt();
-    aaa.debts = debtsObj;
-    aaa.payment_plans = paymentPlansObj;
-    aaa.payments = paymentsObj;
+    const debtHandler = new Debt_1.DebtHandler();
+    debtHandler.debts = debtsObj;
+    debtHandler.payment_plans = paymentPlansObj;
+    debtHandler.payments = paymentsObj;
     //
     //
     //
-    aaa.categorizePayments();
-    aaa.combinePayments();
+    debtHandler.categorizePayments();
+    debtHandler.combinePayments();
+    debtHandler.calculateNextPaymentDay();
+    debtHandler.assembleCompositeDebtObj();
     //
     //
     //
-    res.send("hello hello");
+    res.json(debtHandler.composite_debts);
 }));
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);

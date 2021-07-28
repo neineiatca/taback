@@ -1,6 +1,6 @@
 import express from "express";
 import axios from "axios";
-import { Debt } from "./Debt";
+import { DebtHandler } from "./Debt";
 
 const app = express();
 const port = 8080;
@@ -36,20 +36,22 @@ app.get("/", async (req: any, res: any) => {
   //
   //
   //
-  const aaa = new Debt();
+  const debtHandler = new DebtHandler();
 
-  aaa.debts = debtsObj;
-  aaa.payment_plans = paymentPlansObj;
-  aaa.payments = paymentsObj;
+  debtHandler.debts = debtsObj;
+  debtHandler.payment_plans = paymentPlansObj;
+  debtHandler.payments = paymentsObj;
   //
   //
   //
-  aaa.categorizePayments();
-  aaa.combinePayments();
+  debtHandler.categorizePayments();
+  debtHandler.combinePayments();
+  debtHandler.calculateNextPaymentDay();
+  debtHandler.assembleCompositeDebtObj();
   //
   //
   //
-  res.send("hello hello");
+  res.json(debtHandler.composite_debts);
 });
 
 app.listen(port, () => {

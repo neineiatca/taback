@@ -1,10 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Debt = void 0;
-class Debt {
+exports.DebtHandler = void 0;
+class DebtHandler {
     constructor() {
         this._debts = [];
+        this._composite_debts = [];
         this._payment_plans = [];
+        this._payment_plans_withNext = [];
         this._payments = [];
         this._paymentsMap = new Map();
         this._paymentsTotalMap = new Map();
@@ -26,6 +28,12 @@ class Debt {
     }
     set payments(payments) {
         this._payments = payments;
+    }
+    get payment_plans_withNext() {
+        return this._payment_plans_withNext;
+    }
+    get composite_debts() {
+        return this._composite_debts;
     }
     // expect Map like this
     // Map(4) {
@@ -75,5 +83,69 @@ class Debt {
         // // for debug
         // console.log(this._paymentsTotalMap);
     }
+    calculateNextPaymentDay() {
+        this._payment_plans_withNext = this._payment_plans.map((paymentPlan) => {
+            // get timestamps
+            const installmentStartTime = new Date();
+            const currentTime = new Date(installmentStartTime.getTime());
+            const installDigits = paymentPlan.start_date.split("-");
+            installmentStartTime.setFullYear(parseInt(installDigits[0]));
+            installmentStartTime.setMonth(parseInt(installDigits[1]) - 1);
+            installmentStartTime.setDate(parseInt(installDigits[2]));
+            // get time distance
+            let installmentDistance = (currentTime.getTime() - installmentStartTime.getTime()) /
+                1000 /
+                3600 /
+                24;
+            installmentDistance = Math.round(installmentDistance); // for day-light saving time round
+            // frequency and mod
+            let frequency = paymentPlan.installment_frequency === "BI_WEEKLY"
+                ? 14
+                : paymentPlan.installment_frequency === "WEEKLY"
+                    ? 7
+                    : -1;
+            let nextPaymentDistance = frequency - (installmentDistance % frequency);
+            let nextPaymentTime = new Date(currentTime.getTime() + nextPaymentDistance * 24 * 3600 * 1000);
+            // assemble time-format for next-payment-day
+            let yearPart = nextPaymentTime.getFullYear();
+            let monthPart = "000" + (nextPaymentTime.getMonth() + 1);
+            let datePart = "000" + nextPaymentTime.getDate();
+            let nextPaymentDate = yearPart +
+                "-" +
+                monthPart.substring(monthPart.length - 2, monthPart.length) +
+                "-" +
+                datePart.substring(datePart.length - 2, datePart.length);
+            return Object.assign(Object.assign({}, paymentPlan), { next_date: nextPaymentDate });
+        });
+    }
+    assembleCompositeDebtObj() {
+        this._debts.forEach((currentDebt) => {
+            // set properties
+            let currentCompositeDebt = {};
+            currentCompositeDebt.id = currentDebt.id;
+            currentCompositeDebt.amount_to_pay = currentDebt.amount;
+            // set properties related to payment_plan
+            const paymentPlan = this._payment_plans_withNext.find((e) => e.debt_id === currentDebt.id);
+            if (paymentPlan) {
+                currentCompositeDebt.debt_amount = currentDebt.amount;
+                currentCompositeDebt.payment_plan_id = paymentPlan.id;
+                currentCompositeDebt.amount_to_pay = paymentPlan.amount_to_pay;
+                currentCompositeDebt.next_date = paymentPlan.next_date;
+                currentCompositeDebt.installment = paymentPlan.installment_amount;
+            }
+            // set properties related to payments
+            let combinedPayment;
+            if (paymentPlan === null || paymentPlan === void 0 ? void 0 : paymentPlan.id) {
+                combinedPayment = this._paymentsTotalMap.get(paymentPlan === null || paymentPlan === void 0 ? void 0 : paymentPlan.id);
+            }
+            if (combinedPayment) {
+                currentCompositeDebt.amount_paid = combinedPayment.amount;
+                currentCompositeDebt.amount_left =
+                    currentCompositeDebt.amount_to_pay - currentCompositeDebt.amount_paid;
+            }
+            // push to composite_debt array
+            this._composite_debts.push(currentCompositeDebt);
+        });
+    }
 }
-exports.Debt = Debt;
+exports.DebtHandler = DebtHandler;
