@@ -47,11 +47,11 @@ app.get("/", async (req: any, res: any) => {
   debtHandler.combinePayments();
   debtHandler.calculateNextPaymentDay();
   debtHandler.assembleCompositeDebtObj();
-  let aaa = debtHandler.outputDebt();
+  let debtOutput = debtHandler.outputDebt();
   //
   //
   //
-  res.json(aaa);
+  res.json(debtOutput);
 });
 
 app.listen(port, () => {

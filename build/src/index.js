@@ -47,11 +47,11 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     debtHandler.combinePayments();
     debtHandler.calculateNextPaymentDay();
     debtHandler.assembleCompositeDebtObj();
-    let aaa = debtHandler.outputDebt();
+    let debtOutput = debtHandler.outputDebt();
     //
     //
     //
-    res.json(aaa);
+    res.json(debtOutput);
 }));
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);

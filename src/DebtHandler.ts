@@ -157,7 +157,7 @@ export class DebtHandler {
       let currentCompositeDebt = {} as CompositeDebt;
 
       currentCompositeDebt.id = currentDebt.id;
-      currentCompositeDebt.amount_to_pay = currentDebt.amount;
+      currentCompositeDebt.debt_amount = currentDebt.amount;
 
       // set properties related to payment_plan
       const paymentPlan = this._payment_plans_withNext.find(
@@ -165,20 +165,23 @@ export class DebtHandler {
       );
 
       if (paymentPlan) {
-        currentCompositeDebt.debt_amount = currentDebt.amount;
         currentCompositeDebt.payment_plan_id = paymentPlan.id;
         currentCompositeDebt.amount_to_pay = paymentPlan.amount_to_pay;
         currentCompositeDebt.next_date = paymentPlan.next_date;
         currentCompositeDebt.installment = paymentPlan.installment_amount;
+      } else{
+        currentCompositeDebt.amount_to_pay = 0;
       }
 
       // set properties related to payments
       let combinedPayment;
-      if (paymentPlan?.id !== undefined) {
+      if (paymentPlan) {
         combinedPayment = this._paymentsTotalMap.get(paymentPlan?.id);
+      } else{
+        combinedPayment = {amount: 0};
       }
-
-      if (combinedPayment) {
+      
+      if(combinedPayment){
         currentCompositeDebt.amount_paid = combinedPayment.amount;
         currentCompositeDebt.amount_left = parseFloat(
           (

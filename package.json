@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node build/src/index.js",
-    "test": "jest"
+    "test": "jest ./build/src/Debt.spec.js"
   },
   "dependencies": {
     "axios": "^0.21.1",
